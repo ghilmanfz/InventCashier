@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 class ProductResource extends Resource
 {
     use \App\Traits\HasNavigationBadge;
+
     protected static ?string $model = Product::class;
     protected static ?string $navigationGroup = 'Stock';
     protected static ?string $navigationIcon = 'heroicon-o-cube';
@@ -53,6 +54,11 @@ class ProductResource extends Resource
                     ->searchable()
                     ->preload()
                     ->required(),
+                Forms\Components\Select::make('supplier_id')
+                    ->relationship('supplier', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
                 Forms\Components\MarkdownEditor::make('description')
                     ->maxLength(65535)
                     ->columnSpanFull(),
@@ -80,6 +86,7 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('image')->circular(),
                 Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('supplier.name')->label('Supplier')->sortable(),
                 Tables\Columns\TextColumn::make('category.name'),
                 Tables\Columns\TextColumn::make('sku')
                     ->label('SKU')
@@ -110,9 +117,7 @@ class ProductResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -121,6 +126,7 @@ class ProductResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+
     }
 
     public static function getRelations(): array

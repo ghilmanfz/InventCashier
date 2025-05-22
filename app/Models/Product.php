@@ -35,4 +35,9 @@ class Product extends Model
             set: fn ($value) => str($value)->replace(',', '')
         );
     }
+        public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
 }
