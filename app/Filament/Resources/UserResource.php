@@ -8,11 +8,14 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\RestoreAction;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
 class UserResource extends Resource
 {
     use \App\Traits\HasNavigationBadge;
+
     protected static ?string $model = User::class;
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
@@ -58,8 +61,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('avatar')
-                    ->circular(),
+                Tables\Columns\ImageColumn::make('avatar')->circular(),
                 Tables\Columns\TextColumn::make('name')
                     ->description(fn ($record) => $record->email)
                     ->searchable(),
@@ -86,14 +88,17 @@ class UserResource extends Resource
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload(),
+                TrashedFilter::make(), // ✅ Tambahkan filter untuk melihat data yang dihapus
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                RestoreAction::make(), // ✅ Tombol restore jika data soft deleted
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(), // ✅ Bulk restore
                 ]),
             ]);
     }
