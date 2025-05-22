@@ -1,0 +1,27 @@
+created:
+    - database/factories/CategoryFactory.php
+    - database/factories/CustomerFactory.php
+    - database/factories/ProductFactory.php
+    - database/factories/OrderFactory.php
+    - database/factories/OrderDetailFactory.php
+    - database/factories/StockAdjustmentFactory.php
+    - database/migrations/2024_02_18_014113_create_categories_table.php
+    - database/migrations/2024_02_18_014114_create_customers_table.php
+    - database/migrations/2024_02_18_014115_create_products_table.php
+    - database/migrations/2024_02_18_014116_create_orders_table.php
+    - database/migrations/2024_02_18_014117_create_order_details_table.php
+    - database/migrations/2024_02_18_014118_create_stock_adjustments_table.php
+    - app/Models/Category.php
+    - app/Models/Customer.php
+    - app/Models/Product.php
+    - app/Models/Order.php
+    - app/Models/OrderDetail.php
+    - app/Models/StockAdjustment.php
+models:
+    User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string:100 nullable' }
+    Category: { name: string, relationships: { hasMany: Product } }
+    Customer: { name: string, email: 'string unique', phone_number: 'string nullable', address: 'text nullable', relationships: { hasMany: Order } }
+    Product: { category_id: foreign, image: string, name: string, sku: 'string unique', description: text, stock_quantity: integer, price: integer, cost_price: integer, relationships: { hasMany: StockAdjustment } }
+    Order: { user_id: foreign, customer_id: foreign, order_number: 'string unique', order_name: 'string nullable', discount: integer, total: integer, profit: 'integer nullable', payment_method: string, status: string, relationships: { hasMany: OrderDetail } }
+    OrderDetail: { order_id: foreign, product_id: foreign, quantity: integer, price: integer, subtotal: integer }
+    StockAdjustment: { product_id: foreign, quantity_adjusted: integer, reason: text }

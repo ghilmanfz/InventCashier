@@ -1,0 +1,50 @@
+models:
+  Category:
+    name: string
+    relationships:
+      hasMany: Product
+
+  Customer:
+    name: string
+    email: string unique nullable
+    phone_number: string nullable
+    address: text nullable
+    relationships:
+      hasMany: Order
+
+  Product:
+    category_id: foreign nullable
+    image: string nullable
+    name: string
+    sku: string unique
+    description: text
+    stock_quantity: integer
+    price: integer
+    cost_price: integer
+    relationships:
+      hasMany: StockAdjustment
+
+  Order:
+    user_id: foreign
+    customer_id: foreign nullable
+    order_number: string unique
+    order_name: string nullable
+    discount: integer
+    total: integer
+    profit: integer nullable
+    payment_method: string
+    status: string
+    relationships:
+      hasMany: OrderDetail
+
+  OrderDetail:
+    order_id: foreign
+    product_id: foreign
+    quantity: integer
+    price: integer
+    subtotal: integer
+
+  StockAdjustment:
+    product_id: foreign
+    quantity_adjusted: integer
+    reason: text nullable
