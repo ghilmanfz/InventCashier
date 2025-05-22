@@ -44,20 +44,20 @@
 3. **Install dependency**
 
    ```bash
-   composer install
-   npm install
+   composer install && npm i && npm run build
    ```
-4. **Build aset frontend**
-
-   * **Pengembangan**: `npm run dev`
-   * **Produksi**: `npm run build`
-5. **Migrasi & Seeder database**
+4. **Migrasi & Seeder database**
 
    ```bash
-   php artisan migrate
-   php artisan db:seed   # (opsional, jika tersedia)
+   php artisan migrate:fresh --seed && php artisan shield:install --fresh --minimal # (opsional, jika ingin menggunakan data dummy, nanti pilih user login di Terminal)
    ```
-6. **Jalankan server lokal**
+   Atau
+   ```bash
+   php artisan migrate:fresh && php artisan shield:install --fresh --minimal # (opsional, jika tidak ingin menggunakan data dummy, nanti bikin user untuk login di Terminal)
+   ```
+
+   
+5. **Jalankan server lokal**
 
    ```bash
    php artisan serve
