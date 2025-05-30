@@ -35,18 +35,26 @@
    git clone https://github.com/ghilmanfz/InventCashier.git
    cd InventCashier
    ```
+   
 2. **Salin dan konfig `.env`**
 
    ```bash
    cp .env.example .env
-   php artisan key:generate
    ```
+   
 3. **Install dependency**
 
    ```bash
    composer install && npm i && npm run build
    ```
-4. **Migrasi & Seeder database**
+
+4. **APP_KEY dalam file . env**
+
+   ```bash
+   php artisan key:generate
+   ```
+
+5. **Migrasi & Seeder database**
 
    ```bash
    php artisan migrate:fresh --seed && php artisan shield:install --fresh --minimal # (opsional, jika ingin menggunakan data dummy, nanti pilih user login di Terminal)
@@ -57,7 +65,7 @@
    ```
 
    
-5. **Jalankan server lokal**
+6. **Jalankan server lokal**
 
    ```bash
    php artisan serve
