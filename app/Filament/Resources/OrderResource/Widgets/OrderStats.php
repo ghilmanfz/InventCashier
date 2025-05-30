@@ -16,11 +16,6 @@ class OrderStats extends BaseWidget
 {
     use InteractsWithPageTable;
 
-    public static function canView(): bool
-    {
-        return auth()->user()->hasRole(['super_admin', 'manager']);
-    }
-
     protected function getStats(): array
     {
         $createdFrom = new Carbon($this->tableFilters['created_at']['created_from']) ?? now()->startOfMonth();

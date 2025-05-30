@@ -25,7 +25,8 @@ class EditProduct extends EditRecord
                             ->title('Product Deleted')
                             ->body('The product has been successfully deleted.')
                             ->send();
-                    } catch (QueryException $e) {
+                        $this->redirect($this->getResource()::getUrl('index'));
+                    } catch (QueryException) {
                         Notification::make()
                             ->danger()
                             ->title('Failed to delete product')

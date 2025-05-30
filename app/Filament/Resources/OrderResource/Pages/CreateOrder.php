@@ -11,8 +11,12 @@ class CreateOrder extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return route('filament.app.resources.orders.create-transaction', [
-            'record' => $this->record->order_number,
-        ]);
+        return static::getResource()::getUrl(
+            'create-transaction',
+            [
+                // pakai route key (order_number), bukan primary key
+                'record' => $this->record->getRouteKey(),
+            ]
+        );
     }
 }

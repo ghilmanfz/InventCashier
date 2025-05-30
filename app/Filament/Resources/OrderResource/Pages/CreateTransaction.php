@@ -14,13 +14,17 @@ use Filament\Resources\Pages\Page;
 class CreateTransaction extends Page implements HasForms
 {
     protected static string $resource = OrderResource::class;
-
-    protected static string $view = 'filament.resources.order-resource.pages.create-transaction';
+    protected static string $view     = 'filament.resources.order-resource.pages.create-transaction';
 
     public Order $record;
-    public mixed $selectedProduct;
-    public int $quantityValue = 1;
-    public int $discount = 0;
+    public ?int $selectedProduct = null;
+    public int  $quantityValue   = 1;
+    public int  $discount        = 0;
+
+    public function mount(Order $record): void
+    {
+        $this->record = $record;
+    }
 
     public function getTitle(): string
     {
@@ -30,7 +34,6 @@ class CreateTransaction extends Page implements HasForms
     public function removeProduct(OrderDetail $orderDetail): void
     {
         $orderDetail->delete();
-
         $this->dispatch('productRemoved');
     }
 
@@ -44,20 +47,16 @@ class CreateTransaction extends Page implements HasForms
         }
     }
 
-    public function updateOrder(): void
+    protected function updateOrder(): void
     {
         $subtotal = $this->record->orderDetails->sum('subtotal');
-
         $this->record->update([
             'discount' => $this->discount,
-            'total' => $subtotal - $this->discount,
+            'total'    => $subtotal - $this->discount,
         ]);
-
-        $this->record->orderDetails->each(function ($detail) {
-            $product = $detail->product;
-            $product->stock_quantity -= $detail->quantity;
-            $product->save();
-        });
+        $this->record->orderDetails->each(fn (OrderDetail $d) =>
+            $d->product->decrement('stock_quantity', $d->quantity)
+        );
     }
 
     public function finalizeOrder(): void
@@ -82,20 +81,25 @@ class CreateTransaction extends Page implements HasForms
                 ->preload()
                 ->options(Product::pluck('name', 'id')->toArray())
                 ->live()
-                ->afterStateUpdated(function ($state) {
+                ->afterStateUpdated(function (?int $state) {
+                    if (! $state) {
+                        return;
+                    }
                     $product = Product::find($state);
-                    $this->record->orderDetails()->updateOrCreate(
-                        [
-                            'order_id' => $this->record->id,
-                            'product_id' => $state,
-                        ],
-                        [
-                            'product_id' => $state,
-                            'quantity' => $this->quantityValue,
-                            'price' => $product->price,
-                            'subtotal' => $product->price * $this->quantityValue,
-                        ]
-                    );
+                    if (! $product) {
+                        return;
+                    }
+                    $this->record
+                        ->orderDetails()
+                        ->updateOrCreate(
+                            ['order_id' => $this->record->id, 'product_id' => $state],
+                            [
+                                'quantity' => $this->quantityValue,
+                                'price'    => $product->price,
+                                'subtotal' => $product->price * $this->quantityValue,
+                            ]
+                        );
+                    $this->selectedProduct = null;
                 }),
         ];
     }
