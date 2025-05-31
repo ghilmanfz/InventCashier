@@ -125,25 +125,23 @@ Di bawah lisensi [MIT](https://opensource.org/licenses/MIT).
 *Made with ❤️ by ghilmanfz*
 
 
-![image](https://github.com/user-attachments/assets/1d538ab9-4768-45f1-b3ab-d8e7a58a49b4)
+![Image](https://github.com/user-attachments/assets/b88006d3-bfed-4ee8-a86f-1b9bc901489f)
 
-![image](https://github.com/user-attachments/assets/0ae08473-3bff-4ab1-b7e5-1b5f92fdf03d)
+![Image](https://github.com/user-attachments/assets/d1e1cd79-0e32-4696-8c45-18dc87ce7ec8)
 
-![image](https://github.com/user-attachments/assets/ffdaa492-b290-4530-9787-deab2483cef1)
+![Image](https://github.com/user-attachments/assets/59a1f982-6789-4f74-af27-cfea43148fc8)
 
-![image](https://github.com/user-attachments/assets/2854bb97-eca6-4dd9-8ce5-740b473b371a)
+![Image](https://github.com/user-attachments/assets/61632613-f4a3-429b-8365-87a0e64763aa)
 
-![image](https://github.com/user-attachments/assets/adbd2aa5-dd2f-4c34-ae49-9ddbae4bbe95)
+![Image](https://github.com/user-attachments/assets/19d46f64-48f6-49f8-a62b-a3b5aaeedfdc)
 
-![image](https://github.com/user-attachments/assets/7cdf8c5f-a9b7-4e6d-9652-42ec7f976de1)
+![Image](https://github.com/user-attachments/assets/afa77d58-08db-4712-ad33-40c2bd8ef059)
 
-![image](https://github.com/user-attachments/assets/3af0c6b0-ce02-4ac2-98e9-73602aaaee0d)
+![Image](https://github.com/user-attachments/assets/41481135-3e68-4091-bd0b-d6e6e7ab9a7a)
 
-![image](https://github.com/user-attachments/assets/efc04abf-95bd-469c-b9fc-ef4851970f3b)
+![Image](https://github.com/user-attachments/assets/3957c57f-7141-4a07-8346-03c316869a3d)
 
-![image](https://github.com/user-attachments/assets/f35d1276-cb3c-43c8-ac2b-032b0ce2ad53)
-
-
+![Image](https://github.com/user-attachments/assets/c8f6bee2-0bae-4097-bb4d-c65cf4fea2b4)
 
 
 
