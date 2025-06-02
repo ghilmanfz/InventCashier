@@ -2,13 +2,22 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Filament\Resources\StockAdjustmentResource\Pages;
 use App\Models\StockAdjustment;
-use Filament\Forms;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+// —––––––––– Import yang benar untuk Form & Table —–––––––––
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Table;
 
 class StockAdjustmentResource extends Resource
@@ -21,16 +30,23 @@ class StockAdjustmentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('product_id')
+                Select::make('product_id')
                     ->relationship('product', 'name')
                     ->searchable()
                     ->preload()
+                    ->required(),
+
+                // Validasi hanya menerima nilai ≥ 1
+                TextInput::make('quantity_adjusted')
+                    ->label('Quantity Adjustment')
                     ->required()
-                    ->hiddenOn(RelationManagers\StockAdjustmentsRelationManager::class),
-                Forms\Components\TextInput::make('quantity_adjusted')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Textarea::make('reason')
+                    ->numeric()
+                    ->minValue(1)
+                    ->rule('integer|min:1')
+                    ->helperText('Masukkan angka 1 atau lebih. Tidak boleh nol/negatif.')
+                    ->default(1),
+
+                Textarea::make('reason')
                     ->required()
                     ->maxLength(65535)
                     ->default('Restock.')
@@ -44,44 +60,45 @@ class StockAdjustmentResource extends Resource
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('product.name')
-                    ->sortable()
-                    ->hiddenOn(RelationManagers\StockAdjustmentsRelationManager::class),
-                Tables\Columns\TextColumn::make('quantity_adjusted')
+                TextColumn::make('product.name')
+                    ->sortable(),
+
+                TextColumn::make('quantity_adjusted')
                     ->label('Adjusted')
                     ->numeric()
                     ->suffix(' Quantity')
                     ->color('gray')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('reason')
+
+                TextColumn::make('reason')
                     ->limit(50)
                     ->placeholder('-'),
-                Tables\Columns\TextColumn::make('created_at')
+
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
-                Tables\Columns\TextColumn::make('updated_at')
+
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('product_id')
+                SelectFilter::make('product_id')
                     ->relationship('product', 'name')
                     ->searchable()
-                    ->preload()
-                    ->hiddenOn(RelationManagers\StockAdjustmentsRelationManager::class),
+                    ->preload(),
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make(),
-                ])
-                    ->color('gray'),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ])->color('gray'),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
