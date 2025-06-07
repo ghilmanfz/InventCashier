@@ -12,31 +12,37 @@ class Order extends Model
     use HasFactory;
 
     protected $casts = [
-        'status' => \App\Enums\OrderStatus::class,
+        'status'         => \App\Enums\OrderStatus::class,
         'payment_method' => \App\Enums\PaymentMethod::class,
     ];
 
     protected static function booted(): void
     {
+        // Saat membuat order baru, assign user_id dan inisialisasi total = 0
         static::creating(function (self $order) {
             $order->user_id = auth()->id();
-            $order->total = 0;
+            $order->total   = 0;
         });
 
-        static::saving(function ($order) {
-            if ($order->isDirty('total')) {
-                $order->loadMissing('orderDetails.product');
+        // Saat menyimpan (baik create maupun update), hitung ulang total & profit
+        static::saving(function (self $order) {
+            // reload detail untuk jaga–jaga
+            $order->loadMissing('orderDetails.product');
 
-                $profitCalculation = $order->orderDetails->reduce(function ($carry, $detail) {
-                    $productProfit = ($detail->price - $detail->product->cost_price) * $detail->quantity;
+            // hitung subtotal (jumlah harga semua detail)
+            $subtotal = $order->orderDetails->sum(fn($detail) => $detail->price * $detail->quantity);
 
-                    return $carry + $productProfit;
-                }, 0);
+            // total = subtotal - discount (jika ada)
+            $order->attributes['total'] = $subtotal - ($order->discount ?? 0);
 
-                $order->attributes['profit'] = $profitCalculation;
-            }
+            // profit = Σ ((harga – cost_price) × qty)
+            $profit = $order->orderDetails->reduce(function ($carry, $detail) {
+                return $carry + ($detail->price - $detail->product->cost_price) * $detail->quantity;
+            }, 0);
+            $order->attributes['profit'] = $profit;
         });
     }
+
 
     public function getRouteKeyName(): string
     {

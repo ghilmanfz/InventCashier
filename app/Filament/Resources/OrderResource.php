@@ -2,13 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\OrderStatus;
+use App\Enums\PaymentMethod;
 use App\Filament\Resources\OrderResource\Pages;
-use App\Filament\Resources\OrderResource\Widgets\OrderStats;       // ← import widget di sini
+use App\Filament\Resources\OrderResource\Widgets\OrderStats;
 use App\Models\Order;
+use App\Models\Product;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Forms\Set;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Repeater;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -28,55 +38,142 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Order Information')
+                //
+                // Order Information
+                //
+                Section::make('Order Information')
                     ->schema([
-                        Forms\Components\TextInput::make('order_number')
+                        TextInput::make('order_number')
+                            ->label('Order number')
                             ->required()
                             ->default(generateSequentialNumber(Order::class))
+                            ->disabledOn('edit')
                             ->readOnly(),
-                        Forms\Components\TextInput::make('order_name')
+
+                        TextInput::make('order_name')
+                            ->label('Order name')
                             ->maxLength(255)
                             ->placeholder('Tulis nama pesanan'),
-                        Forms\Components\TextInput::make('total')
-                            ->readOnlyOn('create')
-                            ->default(0)
-                            ->numeric(),
-                        Forms\Components\Select::make('customer_id')
+
+                        Select::make('customer_id')
+                            ->label('Customer (optional)')
                             ->relationship('customer', 'name')
                             ->searchable()
                             ->preload()
-                            ->label('Customer (optional)')
                             ->placeholder('Pilih Customer'),
-                        Forms\Components\Group::make([
-                            Forms\Components\Select::make('payment_method')
-                                ->enum(\App\Enums\PaymentMethod::class)
-                                ->options(\App\Enums\PaymentMethod::class)
-                                ->default(\App\Enums\PaymentMethod::CASH)
+
+                        Group::make([
+                            Select::make('payment_method')
+                                ->label('Payment method')
+                                ->options([
+                                    PaymentMethod::CASH->value           => PaymentMethod::CASH->getLabel(),
+                                    PaymentMethod::BANK_TRANSFER->value => PaymentMethod::BANK_TRANSFER->getLabel(),
+                                ])
+                                ->default(PaymentMethod::CASH->value)
                                 ->required(),
-                            Forms\Components\Select::make('status')
-                                ->required()
-                                ->enum(\App\Enums\OrderStatus::class)
-                                ->options(\App\Enums\OrderStatus::class)
-                                ->default(\App\Enums\OrderStatus::PENDING),
-                        ])->columnSpan(2)->columns(2),
-                    ])->columns(2),
+
+                            Select::make('status')
+                                ->label('Status')
+                                ->options([
+                                    OrderStatus::PENDING->value   => OrderStatus::PENDING->getLabel(),
+                                    OrderStatus::COMPLETED->value => OrderStatus::COMPLETED->getLabel(),
+                                    OrderStatus::CANCELLED->value => OrderStatus::CANCELLED->getLabel(),
+                                ])
+                                ->default(OrderStatus::PENDING->value)
+                                ->required(),
+                        ])->columns(2),
+                    ])
+                    ->columns(2),
+
+                //
+                // Order Details
+                //
+                Section::make('Order Details')
+                    ->schema([
+                        Repeater::make('orderDetails')
+                            ->relationship()
+                            ->reactive()
+                            ->afterStateUpdated(function (mixed $state, Get $get, Set $set) {
+                                $details = collect($get('orderDetails'))->sum(fn($d) => $d['subtotal'] ?? 0);
+                                $set('total', $details - ($get('discount') ?? 0));
+                            })
+                            ->createItemButtonLabel('Tambah Produk')
+                            ->schema([
+                                Select::make('product_id')
+                                    ->label('Product')
+                                    ->relationship('product', 'name')
+                                    ->searchable()
+                                    ->reactive()
+                                    ->afterStateUpdated(function (mixed $state, Get $get, Set $set) {
+                                        $set('price', Product::find($state)?->price ?? 0);
+                                    })
+                                    ->required(),
+
+                                TextInput::make('quantity')
+                                    ->label('Quantity')
+                                    ->numeric()
+                                    ->required()
+                                    ->reactive()
+                                    ->afterStateUpdated(function (mixed $state, Get $get, Set $set) {
+                                        $sub = $state * ($get('price') ?? 0);
+                                        $set('subtotal', $sub);
+                                        $details = collect($get('orderDetails'))->sum(fn($d) => $d['subtotal'] ?? 0);
+                                        $set('total', $details - ($get('discount') ?? 0));
+                                    }),
+
+                                TextInput::make('price')
+                                    ->label('Harga Satuan')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->reactive()
+                                    ->default(fn (Get $get) => Product::find($get('product_id'))?->price ?? 0)
+                                    ->afterStateUpdated(function (mixed $state, Get $get, Set $set) {
+                                        $sub = ($get('quantity') ?? 0) * $state;
+                                        $set('subtotal', $sub);
+                                        $details = collect($get('orderDetails'))->sum(fn($d) => $d['subtotal'] ?? 0);
+                                        $set('total', $details - ($get('discount') ?? 0));
+                                    }),
+
+                                TextInput::make('subtotal')
+                                    ->label('Subtotal')
+                                    ->numeric()
+                                    ->readOnly()
+                                    ->reactive()
+                                    ->default(fn (Get $get) => ($get('quantity') ?? 0) * ($get('price') ?? 0)),
+                            ]),
+
+                        TextInput::make('discount')
+                            ->label('Discount')
+                            ->numeric()
+                            ->reactive()
+                            ->afterStateUpdated(function (mixed $state, Get $get, Set $set) {
+                                $details = collect($get('orderDetails'))->sum(fn($d) => $d['subtotal'] ?? 0);
+                                $set('total', $details - ($state ?? 0));
+                            }),
+
+                        TextInput::make('total')
+                            ->label('Total After Discount')
+                            ->numeric()
+                            ->readOnly()
+                            ->reactive()
+                            ->default(fn (Get $get) =>
+                                collect($get('orderDetails'))->sum(fn($d) => $d['subtotal'] ?? 0)
+                                - ($get('discount') ?? 0)
+                            ),
+                    ])
+                    ->columns(3),
             ]);
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public static function table(Table $table): Table
     {
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns(self::getTableColumns())
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
-                    ->options(\App\Enums\OrderStatus::class),
-                Tables\Filters\SelectFilter::make('payment_method')
-                    ->multiple()
-                    ->options(\App\Enums\PaymentMethod::class),
+                Tables\Filters\SelectFilter::make('status')->options(OrderStatus::class),
+                Tables\Filters\SelectFilter::make('payment_method')->multiple()->options(PaymentMethod::class),
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('created_from')
@@ -86,39 +183,40 @@ class OrderResource extends Resource
                             ->native(false)
                             ->maxDate(now()),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when($data['created_from'], fn (Builder $q, $d) => $q->whereDate('created_at', '>=', $d))
-                            ->when($data['created_until'], fn (Builder $q, $d) => $q->whereDate('created_at', '<=', $d));
-                    }),
+                    ->query(fn (Builder $q, array $data) =>
+                        $q
+                            ->when($data['created_from'], fn ($q) => $q->whereDate('created_at', '>=', $data['created_from']))
+                            ->when($data['created_until'], fn ($q) => $q->whereDate('created_at', '<=', $data['created_until']))
+                    ),
             ])
             ->actions([
                 Tables\Actions\Action::make('print')
                     ->button()
                     ->color('gray')
                     ->icon('heroicon-o-printer')
-                    ->action(function (Order $record) {
-                        $pdf = Pdf::loadView('pdf.print-order', ['order' => $record]);
-                        return response()->streamDownload(fn() => print($pdf->stream()), 'receipt-'.$record->order_number.'.pdf');
-                    }),
+                    ->action(fn (Order $record) =>
+                        response()->streamDownload(
+                            fn () => print(Pdf::loadView('pdf.print-order', ['order' => $record])->stream()),
+                            'receipt-' . $record->order_number . '.pdf'
+                        )
+                    ),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()->color('gray'),
                     Tables\Actions\EditAction::make()->color('gray'),
                     Tables\Actions\Action::make('edit-transaction')
-                        ->visible(fn (Order $record) => $record->status === \App\Enums\OrderStatus::PENDING)
+                        ->visible(fn (Order $r) => $r->status === OrderStatus::PENDING)
                         ->label('Edit Transaction')
                         ->icon('heroicon-o-pencil')
-                        ->url(fn (Order $record) => "/orders/{$record->id}/transaction"),
+                        ->url(fn (Order $r) => "/orders/{$r->getKey()}/transaction"),
                     Tables\Actions\Action::make('mark-as-complete')
-                        ->visible(fn (Order $record) => $record->status === \App\Enums\OrderStatus::PENDING)
+                        ->visible(fn (Order $r) => $r->status === OrderStatus::PENDING)
                         ->requiresConfirmation()
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
-                        ->action(fn (Order $record) => $record->markAsComplete())
+                        ->action(fn (Order $r) => $r->markAsComplete())
                         ->label('Mark as Complete'),
                     Tables\Actions\Action::make('divider')->label('')->disabled(),
-                    Tables\Actions\DeleteAction::make()
-                        ->before(fn (Order $order) => $order->orderDetails()->delete()),
+                    Tables\Actions\DeleteAction::make()->before(fn (Order $o) => $o->orderDetails()->delete()),
                 ])->color('gray'),
             ])
             ->bulkActions([
@@ -147,21 +245,15 @@ class OrderResource extends Resource
                 ->numeric()->alignEnd()->sortable()
                 ->summarize(Tables\Columns\Summarizers\Sum::make('total')->money('IDR')),
             Tables\Columns\TextColumn::make('profit')
-                ->numeric()->alignEnd()->sortable()->toggleable(isToggledHiddenByDefault: true)
+                ->numeric()->alignEnd()->sortable()->toggleable()
                 ->summarize(Tables\Columns\Summarizers\Sum::make('profit')->money('IDR')),
             Tables\Columns\TextColumn::make('payment_method')->badge()->color('gray'),
-            Tables\Columns\TextColumn::make('status')->badge()->color(fn ($state) => $state->getColor()),
-            Tables\Columns\TextColumn::make('user.name')->toggleable(isToggledHiddenByDefault: true),
-            Tables\Columns\TextColumn::make('customer.name')->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('status')
+                ->badge()
+                ->color(fn (OrderStatus $state): string => $state->getColor()),
             Tables\Columns\TextColumn::make('created_at')
                 ->dateTime()->sortable()
-                // ⚠️ pastikan parameter bernama $state, bukan $s atau lainnya:
-                ->formatStateUsing(fn ($state) => $state->format('d M Y H:i'))
-                ->toggleable(),
-            Tables\Columns\TextColumn::make('updated_at')
-                ->dateTime()->sortable()
-                ->formatStateUsing(fn ($state) => $state->format('d M Y H:i'))
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->formatStateUsing(fn (\Illuminate\Support\Carbon $dt) => $dt->format('d M Y H:i')),
         ];
     }
 
@@ -179,7 +271,6 @@ class OrderResource extends Resource
             'create'             => Pages\CreateOrder::route('/create'),
             'edit'               => Pages\EditOrder::route('/{record}/edit'),
             'view'               => Pages\ViewOrder::route('/{record}/details'),
-            // → pastikan pakai {record}/transaction
             'create-transaction' => Pages\CreateTransaction::route('/{record}/transaction'),
         ];
     }
@@ -187,7 +278,7 @@ class OrderResource extends Resource
     public static function getWidgets(): array
     {
         return [
-            OrderStats::class,    // ← pastikan ini merujuk ke class yang di-import di atas
+            OrderStats::class,
         ];
     }
 }
