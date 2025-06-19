@@ -1,9 +1,3 @@
-Latest v1.0.2 — InventCashier - GHZ
-## What's Changed
-- ✔️ Bisa Edit Transaction Order (Direct ke Halaman Transaksi, jadi tidak membuat form atau page baru)
-- 🚪 Mark As Complete pada order yang sudah terjadi (khusus untuk pending dan cancel)
-- 🔄 Perbaikan bug Total yang bisa diubah (bukan otomatis), sekarang  _Readonly_ 
-
 # InventCashier
 
 ![PHP Version](https://img.shields.io/badge/php-8.1%2B-blue) ![Laravel Version](https://img.shields.io/badge/laravel-10.x-red) ![License: MIT](https://img.shields.io/badge/license-MIT-green)
