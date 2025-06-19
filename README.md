@@ -1,3 +1,9 @@
+Latest v1.0.2 — InventCashier - GHZ
+## What's Changed
+- ✔️ Bisa Edit Transaction Order (Direct ke Halaman Transaksi, jadi tidak membuat form atau page baru)
+- 🚪 Mark As Complete pada order yang sudah terjadi (khusus untuk pending dan cancel)
+- 🔄 Perbaikan bug Total yang bisa diubah (bukan otomatis), sekarang  _Readonly_ 
+
 # InventCashier
 
 ![PHP Version](https://img.shields.io/badge/php-8.1%2B-blue) ![Laravel Version](https://img.shields.io/badge/laravel-10.x-red) ![License: MIT](https://img.shields.io/badge/license-MIT-green)
@@ -11,7 +17,7 @@
 * **Manajemen Produk**
   Kelola data produk lengkap (nama, SKU unik, deskripsi, harga, stok, gambar).
 * **Penyesuaian Stok (Stock Adjustment)**
-  Catat perubahan stok beserta alasan (restock, retur, kerusakan, dsb.).
+  Catat penambahan stok beserta alasan (misal restock).
 * **Manajemen Pelanggan**
   Simpan data pelanggan (nama, email, no. telepon, alamat).
 * **Pencatatan Pesanan (Orders)**
@@ -26,6 +32,11 @@
   Login via Laravel Sanctum, proteksi rute dan hak akses granular dengan Filament Shield.
 * **Responsive & Modern UI**
   Dibangun di atas Filament Admin Panel untuk pengalaman pengguna yang bersih dan cepat.
+* **Retur Produk (Return Product)**
+Catat retur stok beserta alasan (retur ke supplier atau ke costumer, dengan namanya, dan alasan nya).
+
+
+
 
 ## 🚀 Instalasi
 
@@ -125,25 +136,23 @@ Di bawah lisensi [MIT](https://opensource.org/licenses/MIT).
 *Made with ❤️ by ghilmanfz*
 
 
-![Image](https://github.com/user-attachments/assets/b88006d3-bfed-4ee8-a86f-1b9bc901489f)
+![image](https://github.com/user-attachments/assets/c85f1365-25c2-4aab-84a6-b2162d31baa5)
 
-![Image](https://github.com/user-attachments/assets/d1e1cd79-0e32-4696-8c45-18dc87ce7ec8)
+![image](https://github.com/user-attachments/assets/d2757fe3-a0bd-45bc-b907-851c0487e3a4)
 
-![Image](https://github.com/user-attachments/assets/59a1f982-6789-4f74-af27-cfea43148fc8)
+![image](https://github.com/user-attachments/assets/1314069e-a8bf-4618-942a-91d044c71876)
 
-![Image](https://github.com/user-attachments/assets/61632613-f4a3-429b-8365-87a0e64763aa)
+![image](https://github.com/user-attachments/assets/27394cfd-d686-4554-bc3e-e3db1a063613)
 
-![Image](https://github.com/user-attachments/assets/19d46f64-48f6-49f8-a62b-a3b5aaeedfdc)
+![image](https://github.com/user-attachments/assets/4a872a99-6ea6-4d47-bf76-3cb5b974e4d4)
 
-![Image](https://github.com/user-attachments/assets/afa77d58-08db-4712-ad33-40c2bd8ef059)
+![image](https://github.com/user-attachments/assets/3ca35d30-0c66-40e1-9f06-c95390294a70)
 
-![Image](https://github.com/user-attachments/assets/41481135-3e68-4091-bd0b-d6e6e7ab9a7a)
+![image](https://github.com/user-attachments/assets/dbba0018-064e-4324-a9f4-6133981de400)
 
-![Image](https://github.com/user-attachments/assets/3957c57f-7141-4a07-8346-03c316869a3d)
+![image](https://github.com/user-attachments/assets/92ccf26b-dc47-4c27-9d26-fadb9c54d79f)
 
-![Image](https://github.com/user-attachments/assets/c8f6bee2-0bae-4097-bb4d-c65cf4fea2b4)
+![image](https://github.com/user-attachments/assets/9a07b564-f6e9-41f5-943e-2cd986d53c12)
 
-
-
-
+![image](https://github.com/user-attachments/assets/5e8641fc-2f77-4633-8f5d-487820cb13f8)
 
