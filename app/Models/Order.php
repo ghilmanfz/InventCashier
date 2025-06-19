@@ -12,31 +12,42 @@ class Order extends Model
     use HasFactory;
 
     protected $casts = [
-        'status' => \App\Enums\OrderStatus::class,
+        'status'         => \App\Enums\OrderStatus::class,
         'payment_method' => \App\Enums\PaymentMethod::class,
     ];
 
+    /**
+     * Boot model observers.
+     */
     protected static function booted(): void
     {
+        // set user & init total saat membuat Order
         static::creating(function (self $order) {
             $order->user_id = auth()->id();
-            $order->total = 0;
+            $order->total   = 0;
         });
 
-        static::saving(function ($order) {
-            if ($order->isDirty('total')) {
-                $order->loadMissing('orderDetails.product');
+        // hitung ulang subtotal, total, profit SETIAP save
+        static::saving(function (self $order) {
+            // pastikan relasi & cost_price produk sudah dimuat
+            $order->loadMissing('orderDetails.product');
 
-                $profitCalculation = $order->orderDetails->reduce(function ($carry, $detail) {
-                    $productProfit = ($detail->price - $detail->product->cost_price) * $detail->quantity;
+            // subtotal semua item
+            $subtotal      = $order->orderDetails->sum('subtotal');
+            $order->total  = max($subtotal - ($order->discount ?? 0), 0);
 
-                    return $carry + $productProfit;
-                }, 0);
-
-                $order->attributes['profit'] = $profitCalculation;
-            }
+            // profit = selisih harga jual - HPP
+            $order->profit = $order->orderDetails->reduce(
+                fn (int $carry, $detail) =>
+                    $carry + (($detail->price - $detail->product->cost_price) * $detail->quantity),
+                0
+            );
         });
     }
+
+    /* --------------------------------------------------------------------- */
+    /*                                 RELASI                                */
+    /* --------------------------------------------------------------------- */
 
     public function getRouteKeyName(): string
     {
@@ -57,6 +68,8 @@ class Order extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    /* --------------------------------------------------------------------- */
 
     public function markAsComplete(): void
     {

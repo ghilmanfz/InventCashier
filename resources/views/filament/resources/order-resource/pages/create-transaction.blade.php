@@ -15,6 +15,7 @@
             </x-slot>
             <div class="-mx-4 flow-root sm:mx-0">
                 <form wire:submit="finalizeOrder">
+                    @php($discount = $discount ?? ($record->discount ?? 0))
                     <x-table>
                         <colgroup>
                             <col class="w-full sm:w-1/2">
