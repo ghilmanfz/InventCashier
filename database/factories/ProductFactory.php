@@ -27,6 +27,7 @@ class ProductFactory extends Factory
             'stock_quantity' => 1000,
             'cost_price' => $costPrice = $this->faker->numberBetween(10000, 100000),
             'price' => $costPrice + ($costPrice * (20 / 100)),
+            'is_tempered_glass' => $this->faker->boolean(20), // 20 % sample tempered glass
         ];
     }
 }

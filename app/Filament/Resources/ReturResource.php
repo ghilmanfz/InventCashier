@@ -97,37 +97,32 @@ class ReturResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('product.name')
-                    ->label('Product')
-                    ->searchable()
-                    ->sortable(),
+    return $table
+        ->columns([
+            TextColumn::make('product.name')
+                ->label('Product')
+                ->searchable()
+                ->sortable(),
 
-                TextColumn::make('quantity')
-                    ->label('Quantity')
-                    ->numeric()
-                    ->sortable(),
+            TextColumn::make('quantity')
+                ->label('Quantity')
+                ->numeric()
+                ->sortable(),
 
-                TextColumn::make('type')
-                    ->label('Tipe')
-                    ->sortable()
-                    ->formatStateUsing(fn (string $state): string => match ($state) {
-                        'customer' => 'Customer',
-                        'supplier' => 'Supplier',
-                        default    => '-',
-                    }),
+            TextColumn::make('type')
+                ->label('Tipe')
+                ->sortable()
+                ->formatStateUsing(fn (string $state) => ucfirst($state)),
 
-                TextColumn::make('related_id')
-                    ->label('Customer/Supplier')
-                    ->formatStateUsing(fn ($state, $record) => $record->related?->name ?? '-')
-                    ->sortable(false)
-                    ->searchable(false),
+           TextColumn::make('related_name')
+                ->label('Customer / Supplier'),
 
-                TextColumn::make('created_at')
-                    ->label('Waktu Retur')
-                    ->dateTime('d M Y H:i')
-                    ->sortable(),
+            TextColumn::make('created_at')
+                ->label('Waktu Retur')
+                ->dateTime('d M Y H:i')
+                ->sortable(),               
+                 TextColumn::make('related_name')        // memakai accessor baru
+                 ->label('Customer / Supplier'),
             ])
             ->filters([
                 SelectFilter::make('type')

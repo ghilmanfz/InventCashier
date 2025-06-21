@@ -13,25 +13,31 @@ class Retur extends Model
 
     protected $guarded = [];
 
+    /* ───────── RELASI PASTI ───────── */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
-    public function related(): BelongsTo|null
+    public function customer(): BelongsTo
     {
-        // Jika tipe retur 'customer'
-        if ($this->type === 'customer') {
-            return $this->belongsTo(Customer::class, 'related_id');
-        }
-        // Jika tipe retur 'supplier'
-        if ($this->type === 'supplier') {
-            return $this->belongsTo(Supplier::class, 'related_id');
-        }
-        // Jika type bukan dua‐duanya, kita kembalikan null
-        return null;
+        return $this->belongsTo(Customer::class, 'related_id');
     }
 
+    public function supplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class, 'related_id');
+    }
+
+    /* Accessor untuk nama pihak yang terkait */
+    public function getRelatedNameAttribute(): string
+    {
+        return $this->type === 'customer'
+            ? $this->customer?->name ?? '-'
+            : $this->supplier?->name ?? '-';
+    }
+
+    /* ---------- VALIDASI ---------- */
     protected static function booted()
     {
         static::creating(function (Retur $retur) {
@@ -40,14 +46,15 @@ class Retur extends Model
                     'quantity' => 'Quantity harus minimal 1.',
                 ]);
             }
+
             if ($retur->type === 'customer') {
-                if (! Customer::where('id', $retur->related_id)->exists()) {
+                if (! Customer::whereKey($retur->related_id)->exists()) {
                     throw ValidationException::withMessages([
                         'related_id' => 'Customer tidak valid.',
                     ]);
                 }
             } elseif ($retur->type === 'supplier') {
-                if (! Supplier::where('id', $retur->related_id)->exists()) {
+                if (! Supplier::whereKey($retur->related_id)->exists()) {
                     throw ValidationException::withMessages([
                         'related_id' => 'Supplier tidak valid.',
                     ]);
