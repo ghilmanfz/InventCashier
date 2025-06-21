@@ -28,6 +28,13 @@
   Dibangun di atas Filament Admin Panel untuk pengalaman pengguna yang bersih dan cepat.
 * **Retur Produk (Return Product)**
 Catat retur stok beserta alasan (retur ke supplier atau ke costumer, dengan namanya, dan alasan nya).
+* **Label Product (Print Label)**
+Print Label Produk untuk di tempel.
+* **Barcode Product**
+Barcode agar lebih mudah mengenali Product.
+* **Fitur Produk Potong**
+Fitur ini untuk produk yang pembeliannya bisa sebagian, misal kaca, 10 x 20 cm sebanyak 1 pcs, maka dibulatkan menjadi 0,5 untuk harganya, sedangkan stoknya tetap berkurang 1.
+
 
 
 
