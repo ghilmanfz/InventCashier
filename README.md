@@ -136,24 +136,52 @@ Di bawah lisensi [MIT](https://opensource.org/licenses/MIT).
 
 *Made with ❤️ by ghilmanfz*
 
+![Image](https://github.com/user-attachments/assets/3f42b5ae-5b2e-4473-8d2c-4ef27a6ab85e)
 
-![image](https://github.com/user-attachments/assets/c85f1365-25c2-4aab-84a6-b2162d31baa5)
+![Image](https://github.com/user-attachments/assets/86e9ad55-e411-40d9-a685-e622446f2338)
 
-![image](https://github.com/user-attachments/assets/d2757fe3-a0bd-45bc-b907-851c0487e3a4)
+![Image](https://github.com/user-attachments/assets/c656e2fd-feed-4c9a-bf71-c7342e0a97a7)
 
-![image](https://github.com/user-attachments/assets/1314069e-a8bf-4618-942a-91d044c71876)
+![Image](https://github.com/user-attachments/assets/260f2078-0868-4425-81c8-aaa2bee6c699)
 
-![image](https://github.com/user-attachments/assets/27394cfd-d686-4554-bc3e-e3db1a063613)
+![Image](https://github.com/user-attachments/assets/79c24bc2-e074-4ec4-9775-47c857c56e2e)
 
-![image](https://github.com/user-attachments/assets/4a872a99-6ea6-4d47-bf76-3cb5b974e4d4)
+![Image](https://github.com/user-attachments/assets/c3c55c19-cbbf-4d44-a58b-7efa08adc82b)
 
-![image](https://github.com/user-attachments/assets/3ca35d30-0c66-40e1-9f06-c95390294a70)
+![Image](https://github.com/user-attachments/assets/51a600f1-9781-4646-9979-252e4cbafa29)
 
-![image](https://github.com/user-attachments/assets/dbba0018-064e-4324-a9f4-6133981de400)
+![Image](https://github.com/user-attachments/assets/af0981fe-4069-4d65-b693-7c41c6339ed6)
 
-![image](https://github.com/user-attachments/assets/92ccf26b-dc47-4c27-9d26-fadb9c54d79f)
+![Image](https://github.com/user-attachments/assets/909d2c7d-3433-464f-8c56-ba568f7538a7)
 
-![image](https://github.com/user-attachments/assets/9a07b564-f6e9-41f5-943e-2cd986d53c12)
+![Image](https://github.com/user-attachments/assets/05e69c40-a166-4ab8-ae11-a4e33d22f227)
 
-![image](https://github.com/user-attachments/assets/5e8641fc-2f77-4633-8f5d-487820cb13f8)
+![Image](https://github.com/user-attachments/assets/685f8857-ad08-43d9-9436-be38da454230)
 
+![Image](https://github.com/user-attachments/assets/ca354843-e06a-4cfa-9833-51abbe7118b9)
+
+![Image](https://github.com/user-attachments/assets/c5402e57-f7ab-4aa7-ab91-db60e46f3c46)
+
+![Image](https://github.com/user-attachments/assets/4d14923c-f2b2-41b0-aa82-09ec934b278e)
+
+![Image](https://github.com/user-attachments/assets/55705406-f378-4465-b1f0-761751f2add4)
+
+![Image](https://github.com/user-attachments/assets/e35960b8-71f2-4563-9cfe-c9d0ac82e4cf)
+
+![Image](https://github.com/user-attachments/assets/478a55a2-ebc7-4b0d-865a-d26983650ce3)
+
+![Image](https://github.com/user-attachments/assets/d3fda8cf-90d6-44e5-b936-91ff03da655f)
+
+![Image](https://github.com/user-attachments/assets/a0378b21-b3b9-4caa-98d1-56788eccec4d)
+
+![Image](https://github.com/user-attachments/assets/7f3a6c8d-a36e-4df2-9fe3-d12bae92aa0a)
+
+![Image](https://github.com/user-attachments/assets/c7a1e192-59b8-4855-b481-3bde7f08e236)
+
+![Image](https://github.com/user-attachments/assets/1c33bea0-d240-4dbd-b257-db576976da51)
+
+![Image](https://github.com/user-attachments/assets/16679cff-2d6d-4d79-81cf-adc907bb0b0f)
+
+![Image](https://github.com/user-attachments/assets/32f01c42-4d54-4136-9320-af088d49f7ef)
+
+![Image](https://github.com/user-attachments/assets/a51176de-8106-451e-963a-54bbe0fa8a65)
