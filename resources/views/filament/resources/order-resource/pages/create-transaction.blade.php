@@ -9,6 +9,19 @@
             </x-slot>
             {{ $this->form }}
         </x-filament::section>
+
+        <x-filament::section>
+            <x-slot name="heading">Scan SKU / Barcode</x-slot>
+            <input
+                dusk="barcode-input"
+                class="w-full h-10 rounded-md border border-zinc-300 dark:bg-zinc-800 dark:text-white px-2"
+                placeholder="Tempel / scan kode kemudian tekan Enter"
+                wire:keydown.enter.prevent="$wire.addProductByCode($event.target.value); $event.target.value='';"
+            />
+        </x-filament::section>
+
+
+
         <x-filament::section>
             <x-slot name="heading">
                 Detail Orders
@@ -53,6 +66,21 @@
                                 <x-table.td class="text-right">
                                     {{ number_format($orderDetail->price * $orderDetail->quantity) }}
                                 </x-table.td>
+                                
+                                @if ($orderDetail->product->is_tempered_glass)
+                                    <x-table.td>
+                                        <input type="number" min="1"
+                                            class="w-20 h-8 rounded-md dark:bg-zinc-800 dark:text-white mb-1"
+                                            placeholder="Panjang"
+                                            wire:change="updateDimension({{ $orderDetail->product_id }}, 'l', $event.target.value)" />
+
+                                        <input type="number" min="1"
+                                            class="w-20 h-8 rounded-md dark:bg-zinc-800 dark:text-white"
+                                            placeholder="Lebar"
+                                            wire:change="updateDimension({{ $orderDetail->product_id }}, 'w', $event.target.value)" />
+                                    </x-table.td>
+                                @endif
+
                                 <x-table.td>
                                     <button type="button" wire:click="removeProduct({{ $orderDetail->id }})">
                                         @svg('heroicon-o-x-mark', [ 'width' => '20px' ])

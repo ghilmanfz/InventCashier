@@ -15,11 +15,6 @@ class OrderStats extends BaseWidget
     use InteractsWithPageFilters;
     protected static ?string $pollingInterval = null;
 
-    public static function canView(): bool
-    {
-        return auth()->user()->hasRole(['super_admin', 'manager']);
-    }
-
     protected function getStats(): array
     {
         $createdFrom = new Carbon($this->filters['start_date'] ?? now()->startOfMonth());

@@ -10,6 +10,8 @@ class OrderDetail extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];     // biar kolom baru otomatis boleh di-fill
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
