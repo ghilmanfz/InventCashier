@@ -83,6 +83,13 @@ Fitur ini untuk produk yang pembeliannya bisa sebagian, misal kaca, 10 x 20 cm s
    php artisan serve
    ```
 
+7. **Jalankan server lokal(Opsional)**
+
+   ```bash
+   composer dump-autoload && php artisan optimize:clear && php artisan config:clear && php artisan cache:clear && php artisan route:clear && php artisan view:clear && php artisan icons:cache && php artisan serve
+   ```
+
+
    Akses aplikasi di `http://localhost:8000` dan panel admin di `http://localhost:8000/admin`.
 
 ## ⚙️ Konfigurasi
